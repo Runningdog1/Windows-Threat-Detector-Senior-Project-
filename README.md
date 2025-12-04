@@ -1,9 +1,8 @@
-decrypt_audit_log_to_json.py -> Decryption Code
+decrypt_audit_log_to_csv.py -> Decryption Code
 
-detections_decrypted.jsonl -> Decrypted Audit Log Sample
+detections_decrypted.csv -> Decrypted Audit Log Sample
 
 eventlog_detector.py -> Main Detection/Alert Code
-
 
 
 Window’s Event Log Threat Detector
@@ -11,10 +10,10 @@ A Python-based cybersecurity tool that monitors and detects suspicious Windows E
 
 Features:
 ●	Developed entirely in Python 3.12, consisting of modules for encryption, subprocess control, and log parsing.
-●	Real-time monitoring with PowerShell and JSONL output.
+●	Real-time monitoring with PowerShell and CSV output.
 ●	Detection of Window Security Events (1102, 4625, 4720, 4726, 4728, 4672, 4663, 4688, 4697, 4723, 4724).
 ●	AES-256-encrypted audit log for secure alert storage.
-●	Supports decrypting and viewing full alert history with decrypt_audit_log_to_json.py
+●	Supports decrypting and viewing full alert history with decrypt_audit_log_to_csv.py
 
 Known Issues and Limitations:
 ●	Currently only supports Windows 11.
@@ -55,8 +54,6 @@ How to Trigger Event ID’s for Detector:
 6. Select “Clear” in pop-up prompt
 6. Observe Security Log Cleared Alert by the detector
 
-
-
 4625: Failed Logins 
 1. Have Detector Running in Window’s Powershell (Administrator Mode)
 2. Open Additional Window’s Powershell Terminal (Administrator Mode)
@@ -72,7 +69,6 @@ auditpol /set /subcategory:"Account Lockout" /failure:enable
 * Note: To revert Windows 11 to its default state (without auditing 4625 Failed Login events), use the following command:
 auditpol /set /subcategory:"Logon" /failure:disable
 auditpol /set /subcategory:"Account Lockout" /failure:disable
-
 
 4720: Account Created                                                                                
 1. Have Detector Running in Window’s Powershell (Administrator Mode)
@@ -121,7 +117,7 @@ auditpol /set /subcategory:"Process Creation" /success:disable /failure:disable
 3. Run the following command in the Additional Powershell Terminal:
 auditpol /set /subcategory:"File System" /success:enable /failure:enable
 4. Run the following command in the Additional Powershell Terminal:
-1..$count | ForEach-Object {
+1..200 | ForEach-Object {
     $f = "C:\Users\Chase McCrary\Downloads\EventLogDetector2\EventFileBurst\massfile_{0}.txt" -f $_
     Set-Content -Path $f -Value "test $_" -Force
 }
@@ -176,5 +172,5 @@ How to Access the Encrypted Audit Log:
 1. Open “detections_decrypted” to see the audit log decrypted.
 2. To update the “detections_decrypted” with the latest alerts, run this command in a Powershell Terminal (Administrator Powershell):
 cd "C:\Users\Chase McCrary\Downloads\EventLogDetector2"
-py decrypt_audit_log_to_json.py
-* Note: “detections.log.enc” is the encrypted audit log that stores the full history of all detector alerts. “audit_key.bin” is the AES-256 encryption key used for both encrypting and decrypting the audit log (it acts as the encrypter and the decrypter). The Python script “decrypt_audit_log_to_json.py” is used to decrypt the log file and output a readable, plaintext version (detections_decrypted.jsonl) containing all previously recorded alerts.
+py decrypt_audit_log_to_csv.py
+* Note: “detections.log.enc” is the encrypted audit log that stores the full history of all detector alerts. “audit_key.bin” is the AES-256 encryption key used for both encrypting and decrypting the audit log (it acts as the encrypter and the decrypter). The Python script decrypt_audit_log_to_csv.py decrypts the encrypted audit log and outputs a readable CSV file (detections_decrypted.csv) containing all previously recorded alerts.
